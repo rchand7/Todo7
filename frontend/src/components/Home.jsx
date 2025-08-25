@@ -13,7 +13,7 @@ function Home() {
     const fetchtodos = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("https://todo7-9miu.onrender.com/todo/fetch", {
+        const response = await axios.get("https://todo7-63n1.onrender.com/todo/fetch", {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
