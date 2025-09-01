@@ -2,39 +2,44 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 import todoRoute from "../backend/routes/todo.route.js";
 import userRoute from "../backend/routes/user.route.js";
-import cookieParser from "cookie-parser";
-const app = express();
+
 dotenv.config();
 
+const app = express();
 const PORT = process.env.PORT || 4002;
 const DB_URI = process.env.MONGODB_URI;
 
-// middlewares
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "http://localhost:5173", // Wrap in quotes
     credentials: true,
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"], // Add other headers you want to allow here.
+    methods: ["GET", "POST", "PUT", "DELETE"], // Use array instead of string
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// Database connection code
-try {
-  await mongoose.connect(DB_URI);
-  console.log("Connected to MongoDB");
-} catch (error) {
-  console.log(error);
-}
+// Connect to MongoDB
+(async () => {
+  try {
+    await mongoose.connect(DB_URI);
+    console.log("✅ Connected to MongoDB");
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error.message);
+  }
+})();
 
-// routes
+// Routes
 app.use("/todo", todoRoute);
 app.use("/user", userRoute);
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
